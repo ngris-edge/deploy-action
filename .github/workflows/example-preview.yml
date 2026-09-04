@@ -1,0 +1,18 @@
+# Example: copy this into YOUR repo at .github/workflows/preview.yml
+name: Preview
+on: pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: ngris-edge/deploy-action@v1
+        with:
+          api-key: ${{ secrets.NGRIS_API_KEY }}
+          build-command: npm ci && npm run build
+          dir: dist

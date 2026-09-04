@@ -1,0 +1,62 @@
+name: 'Deploy to ngris'
+description: 'Build and deploy a preview to the ngris edge on every pull request, and comment the live URL.'
+author: 'ngris'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+
+inputs:
+  api-key:
+    description: 'Your ngris API key. Create one in the dashboard (Settings → API keys) and store it as a repository secret, e.g. NGRIS_API_KEY. Starts with ngk_.'
+    required: true
+  app:
+    description: 'The ngris application to deploy to (created automatically if it does not exist). Every push deploys a new preview to this app. Defaults to the repository name.'
+    required: false
+    default: ${{ github.event.repository.name }}
+  dir:
+    description: 'The directory to deploy — your build output. Its contents are served at the preview URL. Default: dist'
+    required: false
+    default: 'dist'
+  build-command:
+    description: 'Optional command to run before deploying, e.g. "npm ci && npm run build". Leave empty if you build in a previous step.'
+    required: false
+    default: ''
+  api-url:
+    description: 'ngris API base URL. Only change this for a self-hosted or non-default region.'
+    required: false
+    default: 'https://api.ngris.com'
+  comment:
+    description: 'Comment the preview URL on the pull request (upserts a single comment). Set to "false" to disable.'
+    required: false
+    default: 'true'
+  github-token:
+    description: 'Token used to comment on the PR. Defaults to the automatic workflow token (needs pull-requests: write).'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  preview-url:
+    description: 'The live preview URL for this deploy.'
+    value: ${{ steps.ngris.outputs.preview-url }}
+  deploy-uuid:
+    description: 'The UUID of the deploy that was created.'
+    value: ${{ steps.ngris.outputs.deploy-uuid }}
+
+runs:
+  using: 'composite'
+  steps:
+    - id: ngris
+      shell: bash
+      run: ${{ github.action_path }}/entrypoint.sh
+      env:
+        NGRIS_API_KEY: ${{ inputs.api-key }}
+        NGRIS_APP: ${{ inputs.app }}
+        NGRIS_DIR: ${{ inputs.dir }}
+        NGRIS_BUILD_COMMAND: ${{ inputs.build-command }}
+        NGRIS_API_URL: ${{ inputs.api-url }}
+        NGRIS_COMMENT: ${{ inputs.comment }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        GH_EVENT_PATH: ${{ github.event_path }}
+        GH_EVENT_NAME: ${{ github.event_name }}
+        GH_REPOSITORY: ${{ github.repository }}
+        GH_API_URL: ${{ github.api_url }}
