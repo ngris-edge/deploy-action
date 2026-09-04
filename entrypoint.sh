@@ -60,7 +60,7 @@ done
 echo "build ready."
 
 # --- 4) enable the public preview URL for this deploy ---------------------
-preview_url="$(curl -fsS "${auth[@]}" -X POST "$API/api/applications/$app_uuid/deploys/$deploy_uuid/preview" | jq -r '.preview_url')"
+preview_url="$(curl -fsS "${auth[@]}" "${ct_json[@]}" -X POST "$API/api/applications/$app_uuid/deploys/$deploy_uuid/preview" | jq -r '.preview_url')"
 [ -n "$preview_url" ] && [ "$preview_url" != "null" ] || die "could not enable the preview URL."
 
 echo "preview-url=$preview_url"  >> "${GITHUB_OUTPUT:-/dev/stdout}"
@@ -90,9 +90,9 @@ _Every push updates this preview. Behind the ngris edge (WAF, auth, rate-limit c
     cid="$(curl -fsS "${gh_auth[@]}" "$ghapi/repos/$repo/issues/$pr/comments?per_page=100" \
       | jq -r --arg m "$marker" 'map(select(.body|type=="string" and contains($m)))[0].id // empty')"
     if [ -n "$cid" ]; then
-      curl -fsS "${gh_auth[@]}" -X PATCH "$ghapi/repos/$repo/issues/comments/$cid" -d "$payload" >/dev/null && echo "updated PR #$pr comment"
+      curl -fsS "${gh_auth[@]}" "${ct_json[@]}" -X PATCH "$ghapi/repos/$repo/issues/comments/$cid" -d "$payload" >/dev/null && echo "updated PR #$pr comment"
     else
-      curl -fsS "${gh_auth[@]}" -X POST  "$ghapi/repos/$repo/issues/$pr/comments"       -d "$payload" >/dev/null && echo "commented on PR #$pr"
+      curl -fsS "${gh_auth[@]}" "${ct_json[@]}" -X POST  "$ghapi/repos/$repo/issues/$pr/comments"       -d "$payload" >/dev/null && echo "commented on PR #$pr"
     fi
   fi
 fi
