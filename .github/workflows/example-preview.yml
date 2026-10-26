@@ -1,6 +1,12 @@
-# Example: copy this into YOUR repo at .github/workflows/preview.yml
+# Example: copy this into YOUR repo at .github/workflows/ngris.yml
+# Pull requests get a preview that is not live; closing a PR turns its preview off.
+# To also deploy to production on a push to your default branch, add under `on:`
+#   push:
+#     branches: [main]
 name: Preview
-on: pull_request
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
 permissions:
   contents: read
   pull-requests: write
