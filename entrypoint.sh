@@ -157,7 +157,10 @@ fi
 # --- optional build -------------------------------------------------------
 if [ -n "${NGRIS_BUILD_COMMAND:-}" ]; then
   echo "::group::build: ${NGRIS_BUILD_COMMAND}"
-  bash -lc "${NGRIS_BUILD_COMMAND}"
+  # The build runs the repository's own code (on a pull request: the PR's code). It gets
+  # no ngris API key and no GitHub token, so a build step cannot upload or promote a deploy
+  # itself, and a tool that prints its environment cannot leak them.
+  env -u NGRIS_API_KEY -u INPUT_API-KEY -u GH_TOKEN -u GITHUB_TOKEN bash -lc "${NGRIS_BUILD_COMMAND}"
   echo "::endgroup::"
 fi
 [ -d "$DIR" ] || die "deploy directory '$DIR' not found — set 'dir' to your build output (e.g. dist, build, out)."

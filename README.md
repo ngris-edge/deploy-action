@@ -65,6 +65,7 @@ That's all — the app is created automatically on the first run.
 
 - Previews are **private** by default: only members of your ngris account can open them, after they sign in to ngris.
 - To let anyone with the link open your previews, open the application in the dashboard → **Settings → Visibility**, set **Deploy previews** to **Public** and save.
+- Your `build-command` runs without your ngris API key and without the GitHub token. Code in a pull request from a branch of your own repository still runs inside your workflow, so only give write access to people you trust; pull requests from forks get no secrets from GitHub at all.
 - The protections you set on your production endpoints (WAF, sign-in, rate limits, bot and geo rules, edge functions) **do not apply to preview URLs**. A public preview can be opened by anyone who has its link, so keep previews private if what you build must stay behind sign-in.
 
 ## Inputs

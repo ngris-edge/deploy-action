@@ -219,6 +219,16 @@ check "shows the limit" has "$cdir/out" "limit of 1 live preview"
 check "the live deploy is unchanged" is "$(st '.apps[0].current_deploy_uuid')" dep-live
 stop
 
+start "the build command gets no API key and no GitHub token" \
+  "{\"apps\":[$APP_SITE],\"deploys\":[$DEP_LIVE]}"
+run pull_request "$(pr_event 7 opened)" NGRIS_BUILD_COMMAND="env > $cdir/build-env"
+check "exits 0" is "$RC" 0
+check "the build ran" is "$([ -s "$cdir/build-env" ] && echo ran || echo skipped)" ran
+check "no ngris API key in the build" lacks "$cdir/build-env" "ngk_test"
+check "no GitHub token in the build" lacks "$cdir/build-env" "ghs_test"
+check "the preview was still uploaded" is "$(st '.uploads | length')" 1
+stop
+
 # ---------------------------------------------------------------------------
 echo
 echo "$passed passed, ${#failures[@]} failed"
