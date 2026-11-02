@@ -7,7 +7,7 @@ branding:
 
 inputs:
   api-key:
-    description: 'Your ngris API key. Create one in the dashboard (Settings → API keys) and store it as a repository secret, e.g. NGRIS_API_KEY. Starts with ngk_.'
+    description: 'An ngris account key (nak_) or an API key (ngk_), stored as a repository secret, e.g. NGRIS_API_KEY. Use an account key for CI: it belongs to the ngris account, so it keeps working when people change (dashboard → Account → Account keys). An API key is your own (dashboard → User settings → API keys).'
     required: true
   app:
     description: 'The ngris application to deploy to, by its exact name (created automatically if it does not exist). Defaults to the repository name.'
