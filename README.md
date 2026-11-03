@@ -42,11 +42,24 @@ Only want previews? Leave out the `push:` trigger.
 
 ## Setup (2 minutes)
 
-1. **Create an API key.** In the ngris dashboard → **Settings → API keys**, create a key (it starts with `ngk_`).
+1. **Create an account key.** In the ngris dashboard → **Account → Account keys**, create a key (it starts with `nak_`) with a role that has **Endpoints** read and write.
 2. **Add it as a repo secret.** Repo → Settings → Secrets and variables → Actions → New secret → name it `NGRIS_API_KEY`.
 3. **Add the workflow** above to `.github/workflows/ngris.yml`.
 
 That's all — the app is created automatically on the first run.
+
+### Which key?
+
+The action takes **an account key (`nak_…`) or an API key (`ngk_…`)**. Use an account key for CI:
+
+| | Account key (`nak_…`) | API key (`ngk_…`) |
+|---|---|---|
+| Belongs to | the ngris account | you |
+| Deploys into | its own account | your default account, until you switch accounts with it |
+| When its creator leaves the account | keeps working | no longer reaches that account |
+| Created under | **Account → Account keys** | **User settings → API keys** |
+
+An account key can do what its role allows: give it a role with **Endpoints** read and write. See [Account keys](https://ngris.com/docs/dashboard/account-keys).
 
 ## Previews and production
 
@@ -74,7 +87,7 @@ That's all — the app is created automatically on the first run.
 
 | Input | Required | Default | Description |
 |---|---|---|---|
-| `api-key` | ✅ | — | Your ngris API key (`ngk_…`). Store it as a repo secret. |
+| `api-key` | ✅ | — | An account key (`nak_…`, recommended for CI) or your API key (`ngk_…`). Store it as a repo secret. |
 | `app` | | repo name | The ngris application to deploy to, by its exact name (created if missing). |
 | `dir` | | `dist` | The build-output directory to deploy. Set to `build`, `out`, `public`, etc. as your framework requires. |
 | `build-command` | | — | Command to run before deploying, e.g. `npm ci && npm run build`. Omit if you build in a previous step. |
@@ -121,7 +134,7 @@ Use them in later steps:
 4. Turns off the previous preview of the same pull request (or of production), then turns on this deploy's preview URL.
 5. Upserts a single comment on the PR with the URL.
 
-It uses only the public ngris API (`/api/applications…`) with your API key — no extra credentials, nothing stored.
+It uses only the public ngris API (`/api/applications…`) with the key you give it — no extra credentials, nothing stored.
 
 ## Notes & limits
 

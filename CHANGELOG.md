@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- README and the `api-key` input: the action takes an ngris **account key** (`nak_…`) or an API key (`ngk_…`). Use an account key for CI: it belongs to the ngris account, so deploys keep working when people change. No change in the action itself.
 - README: previews now follow the protections of the app's main endpoint (sign-in, firewall, rate limits, WAF, edge functions) and are not cached at the edge. This is a change on the ngris platform, not in the action. An app with no endpoint has no protections to apply, so keep its previews private.
 
 ## v1.1.0 — 2026-10-26
